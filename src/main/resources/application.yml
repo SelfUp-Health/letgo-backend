@@ -1,0 +1,104 @@
+#------------------------------------
+# Server settings
+#------------------------------------
+
+server:
+  port: 1889
+  servlet:
+    context-path: /api
+#    session:
+#      cookie:
+#        name: let-go-backend
+#        http-only: true
+#        secure: false
+#        path: /
+#        enforce-same-site: false
+#      timeout: 60m
+  error:
+    whitelabel:
+      enabled: false
+
+#------------------------------------
+# Spring settings
+#------------------------------------
+
+spring:
+  application:
+    name: let-go-backend
+  servlet:
+    multipart:
+      max-file-size: 4096KB
+      max-request-size: 4096KB
+  profiles:
+    active: @activatedProperties@
+
+  #------------------------------------
+  # Security settings
+  #------------------------------------
+
+  security:
+    oauth2:
+      resourceserver:
+        google:
+          jwt:
+            # Google's issuer URI
+            issuer-uri: https://accounts.google.com
+        facebook:
+          debug-url: https://graph.facebook.com/debug_token
+          app-id: ${FB_APP_ID}
+          app-secret: ${FB_APP_SECRET}
+
+  #------------------------------------
+  # Default datasource settings
+  #------------------------------------
+
+  datasource:
+    url: ${BE_POSTGRES_URL}
+    username: ${BE_POSTGRES_USER}
+    password: ${BE_POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  #------------------------------------
+  # Flyway settings
+  #------------------------------------
+
+  flyway:
+    locations: classpath:db/schema
+    enabled: true
+    validate-on-migrate: true
+    mixed: true
+    out-of-order: true
+    table: schema_version
+    placeholder-prefix: $${
+    repeatable-sql-migration-prefix:
+
+#------------------------------------
+# Logging settings
+#------------------------------------
+
+logging:
+  ignore-get-requests: true
+  shorten-stacktrace: true
+  log-request-details-on-error: true
+  pattern:
+    console: "%clr(%d){faint} %clr(%level) [%clr(%.8X{requestId}){magenta}][%clr(%X{user}){magenta}] %clr(%logger{35}){cyan}: %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss,SSS} %level [%.8X{requestId}][%X{user}][%X{database}] %logger{35}: %msg%n"
+  level:
+    ROOT: info
+    org.springframework: info
+    org.springframework.statemachine: warn
+    org.springframework.context.support: warn
+    org.apache.ibatis: info
+    org.mybatis.spring: info
+    org.hibernate.validator: warn
+
+#------------------------------------
+# Documentation settings
+#------------------------------------
+
+documentation:
+  title: @pom.name@
+
+# This is required to change the default swagger api-docs endpoint from /v2/api-docs
+springdoc.swagger-ui.path: /documentation/swagger
+

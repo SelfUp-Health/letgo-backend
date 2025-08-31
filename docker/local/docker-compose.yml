@@ -1,0 +1,21 @@
+# Use postgres/example user/password credentials
+## RUN COMMAND
+## docker-compose up -d
+
+services:
+  postgresql-db:
+    build: backend-postgresql
+    container_name: let-go-backend-postgresql
+    restart: always
+    networks:
+      - let-go-network
+    ports:
+      - "15434:5432"
+    environment:
+      POSTGRES_DB: ${BE_POSTGRES_DB}
+      POSTGRES_USER: ${BE_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${BE_POSTGRES_PASSWORD}
+    volumes:
+      - ./pg_backups:/backups/
+networks:
+  let-go-network:
