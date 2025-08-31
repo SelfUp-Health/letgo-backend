@@ -1,0 +1,43 @@
+name: Build java
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-backend:
+    name: Build backend
+    runs-on: ubuntu-latest
+    environment: backend # here I put name of repo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          java-version: 21
+          distribution: temurin
+      - name: Run the Maven verify phase
+        run: mvn --batch-mode --update-snapshots verify
+      - name: Run clean package
+        run: mvn clean package
+      - name: Set release version
+        run: |
+          echo "BUILD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      - name: Run copy built jar to files
+        run: |
+          mkdir ./docker/files
+          cp ./target/backend-0.0.1-SNAPSHOT.jar ./docker/files/backend-0.0.1-SNAPSHOT.jar
+          ls ./docker/files
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RWD_TOKEN }}
+      - name: Build and push
+        run: |
+          cd ./docker
+          docker build -t ${{ vars.DOCKERHUB_USERNAME }}/let-go-backend .
+          docker push ${{ vars.DOCKERHUB_USERNAME }}/let-go-backend
+
