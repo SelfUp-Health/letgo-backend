@@ -12,7 +12,7 @@ class AuthRequestMatcher implements PublicRequestMatcher {
 
   @Delegate
   private final RequestMatcher delegate = new OrRequestMatcher(
-    antMatcher("/login", HttpMethod.GET),
+    antMatcher("/login", HttpMethod.POST),
     antMatcher("/register", HttpMethod.POST),
     antMatcher("/register/provider", HttpMethod.POST)
   );

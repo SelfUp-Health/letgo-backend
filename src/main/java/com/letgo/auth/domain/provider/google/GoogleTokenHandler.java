@@ -47,7 +47,7 @@ class GoogleTokenHandler implements ProviderTokenHandler {
   }
 
   @Override
-  public ProvidedUser getuserFromAuthHeader(Authentication auth) {
+  public ProvidedUser getUserFromAuthHeader(Authentication auth) {
     JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) jwtAuthProvider.authenticate(auth);
     return getUserJwtToken(jwtAuth.getToken());
   }

@@ -1,11 +1,13 @@
 package com.letgo.auth.domain.user;
 
 import com.letgo.auth.domain.provider.LetGoAuthProvider;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class User {
 
   private Long id;

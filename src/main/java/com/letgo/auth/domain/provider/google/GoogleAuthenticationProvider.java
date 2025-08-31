@@ -25,13 +25,13 @@ public class GoogleAuthenticationProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     // Authenticate and get the JWT token
-    ProvidedUser providedUser = tokenHandler.getuserFromAuthHeader(authentication);
+    ProvidedUser providedUser = tokenHandler.getUserFromAuthHeader(authentication);
 
-    return dataService.findByProviderAndProviderId(
+    return dataService.findByProviderIdAndProvider(
         providedUser.getProviderId(),
         providedUser.getProvider().toString()
       ).map(user -> new UsernamePasswordAuthenticationToken(user, null, null))
-      .orElseThrow(() -> new UsernameNotFoundException(providedUser.getProviderId() + ":" + providedUser.getProviderId()));
+      .orElseThrow(() -> new UsernameNotFoundException(providedUser.getProvider() + ":" + providedUser.getProviderId()));
   }
 
   @Override

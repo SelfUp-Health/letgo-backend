@@ -26,7 +26,7 @@ class FacebookTokenHandler implements ProviderTokenHandler {
   }
 
   @Override
-  public ProvidedUser getuserFromAuthHeader(Authentication auth) {
+  public ProvidedUser getUserFromAuthHeader(Authentication auth) {
     String token = ((BearerTokenAuthenticationToken) auth).getToken();
     return getUserFromToken(token);
   }

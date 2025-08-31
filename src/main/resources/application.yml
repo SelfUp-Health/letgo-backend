@@ -37,6 +37,8 @@ spring:
   #------------------------------------
 
   security:
+    bcrypt:
+      strength: ${BE_BCRYPT_STRENGTH:8}
     oauth2:
       resourceserver:
         google:
@@ -92,6 +94,9 @@ logging:
     org.mybatis.spring: info
     org.hibernate.validator: warn
 
+jwt:
+  secret: ${BE_JWT_SECRET}
+
 #------------------------------------
 # Documentation settings
 #------------------------------------
@@ -102,3 +107,5 @@ documentation:
 # This is required to change the default swagger api-docs endpoint from /v2/api-docs
 springdoc.swagger-ui.path: /documentation/swagger
 
+letgo:
+  domain: ${DOMAIN}

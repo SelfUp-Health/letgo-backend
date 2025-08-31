@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS mng.user (
 
   id         BIGSERIAL    NOT NULL,
   username   VARCHAR(64)  NOT NULL,
-  full_name  VARCHAR(128) NOT NULL,
+  full_name  VARCHAR(128),
   password   VARCHAR(128),
 
   PRIMARY KEY (id)

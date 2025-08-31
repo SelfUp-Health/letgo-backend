@@ -14,12 +14,19 @@ public class RegisterController {
 
   private final RegisterService registrationService;
 
+  @PostMapping
+  @Operation(description = "Register with username and password")
+  public User registerWithProvider(
+    @Valid @RequestBody UserWithPasswordDto user
+  ) {
+    return registrationService.register(user.toDomain());
+  }
+
   @PostMapping("/provider")
   @Operation(description = "Register with provider token")
   public User registerWithProvider(
     @Valid @RequestBody ProvidedUserInfo providerInfo
   ) {
-//    final String token = jwtService.getTokenFromAuthHeader(authHeader);
     return registrationService.registerWithProvider(providerInfo.getToken(), providerInfo.getProvider());
   }
 }

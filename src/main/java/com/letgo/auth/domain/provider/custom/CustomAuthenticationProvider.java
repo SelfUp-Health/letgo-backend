@@ -1,4 +1,4 @@
-package com.letgo.auth.domain.provider.facebook;
+package com.letgo.auth.domain.provider.custom;
 
 import com.letgo.auth.domain.provider.ProvidedUser;
 import com.letgo.auth.domain.spi.UserDataService;
@@ -13,26 +13,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FacebookAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-  private final FacebookTokenHandler facebookTokenHandler;
+  private final CustomTokenHandler tokenHandler;
   private final UserDataService dataService;
-
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-    ProvidedUser providedUser = facebookTokenHandler.getUserFromAuthHeader(authentication);
-    if (providedUser == null) {
-      return null;
-    }
+    // Authenticate and get the JWT token
+    ProvidedUser providedUser = tokenHandler.getUserFromAuthHeader(authentication);
 
-    return dataService.findByProviderIdAndProvider(
-        providedUser.getProviderId(),
-        providedUser.getProvider().toString()
-      ).map(user -> new UsernamePasswordAuthenticationToken(user, null, null))
+    return dataService.findByUsername(providedUser.getProviderId())
+      .map(user -> new UsernamePasswordAuthenticationToken(user, null, null))
       .orElseThrow(() -> new UsernameNotFoundException(providedUser.getProvider() + ":" + providedUser.getProviderId()));
   }
-
 
   @Override
   public boolean supports(Class<?> authentication) {

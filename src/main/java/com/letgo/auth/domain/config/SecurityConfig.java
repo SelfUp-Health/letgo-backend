@@ -1,7 +1,9 @@
 package com.letgo.auth.domain.config;
 
+import com.letgo.auth.domain.provider.custom.CustomAuthenticationProvider;
 import com.letgo.auth.domain.provider.facebook.FacebookAuthenticationProvider;
 import com.letgo.auth.domain.provider.google.GoogleAuthenticationProvider;
+import com.letgo.auth.domain.service.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,8 @@ public class SecurityConfig {
 
   private final FacebookAuthenticationProvider facebookAuthenticationProvider;
   private final GoogleAuthenticationProvider googleAuthenticationProvider;
+  private final CustomAuthenticationProvider customAuthenticationProvider;
+
   private final PublicRequestMatcher[] publicRequestMatchers;
 //  private final CustomAuthenticationProvider customAuthenticationProvider;
 
@@ -52,10 +56,11 @@ public class SecurityConfig {
   }
 
   @Bean
-  public AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver() {
+  public AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(JwtService jwtService) {
     Map<String, AuthenticationManager> authenticationManagers = new HashMap<>();
 
     authenticationManagers.put(googleIssuerUri, googleAuthenticationProvider::authenticate);
+    authenticationManagers.put("custom", customAuthenticationProvider::authenticate);
     authenticationManagers.put("facebook", facebookAuthenticationProvider::authenticate); // Use a custom key
 
     return (request) -> {
@@ -63,6 +68,10 @@ public class SecurityConfig {
       if (token != null) {
         // Try to parse the token as a JWT to check for Google's issuer
         try {
+          if (jwtService.validate(token)) {
+            return authenticationManagers.get("custom");
+          }
+
           String issuer = JwtDecoders.fromOidcIssuerLocation(googleIssuerUri).decode(token).getIssuer().toString();
           if (authenticationManagers.containsKey(issuer)) {
             return authenticationManagers.get(issuer);
@@ -81,6 +90,6 @@ public class SecurityConfig {
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
       return authHeader.substring(7);
     }
-    return null;
+    return authHeader;
   }
 }

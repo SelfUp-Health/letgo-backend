@@ -6,5 +6,5 @@ public interface ProviderTokenHandler {
 
   boolean supports(LetGoAuthProvider type);
   ProvidedUser getUserFromToken(String token);
-  ProvidedUser getuserFromAuthHeader(Authentication auth);
+  ProvidedUser getUserFromAuthHeader(Authentication auth);
 }
