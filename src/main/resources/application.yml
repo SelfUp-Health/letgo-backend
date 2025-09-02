@@ -6,14 +6,14 @@ server:
   port: 1889
   servlet:
     context-path: /api
-#    session:
-#      cookie:
-#        name: let-go-backend
-#        http-only: true
-#        secure: false
-#        path: /
-#        enforce-same-site: false
-#      timeout: 60m
+  #    session:
+  #      cookie:
+  #        name: let-go-backend
+  #        http-only: true
+  #        secure: false
+  #        path: /
+  #        enforce-same-site: false
+  #      timeout: 60m
   error:
     whitelabel:
       enabled: false
@@ -86,8 +86,8 @@ logging:
     console: "%clr(%d){faint} %clr(%level) [%clr(%.8X{requestId}){magenta}][%clr(%X{user}){magenta}] %clr(%logger{35}){cyan}: %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss,SSS} %level [%.8X{requestId}][%X{user}][%X{database}] %logger{35}: %msg%n"
   level:
-    ROOT: info
-    org.springframework: info
+    ROOT: ${LOGGING_LEVEL_ROOT:info}
+    org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK:info}
     org.springframework.statemachine: warn
     org.springframework.context.support: warn
     org.apache.ibatis: info
