@@ -4,6 +4,7 @@ import com.letgo.auth.domain.provider.custom.CustomAuthenticationProvider;
 import com.letgo.auth.domain.provider.facebook.FacebookAuthenticationProvider;
 import com.letgo.auth.domain.provider.google.GoogleAuthenticationProvider;
 import com.letgo.auth.domain.service.jwt.JwtService;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,6 +26,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
   @Value("${spring.security.oauth2.resourceserver.google.jwt.issuer-uri}")
@@ -71,7 +74,7 @@ public class SecurityConfig {
           if (jwtService.validate(token)) {
             return authenticationManagers.get("custom");
           }
-
+        } catch (UnsupportedJwtException e) {
           String issuer = JwtDecoders.fromOidcIssuerLocation(googleIssuerUri).decode(token).getIssuer().toString();
           if (authenticationManagers.containsKey(issuer)) {
             return authenticationManagers.get(issuer);

@@ -1,4 +1,4 @@
-package com.letgo.backend.config.documentation;
+package com.letgo.backend.infrastructure.config.documentation;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
